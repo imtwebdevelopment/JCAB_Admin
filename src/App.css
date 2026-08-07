@@ -121,6 +121,9 @@
   overflow-y: auto;
 }
 
+.page-header {
+  margin-bottom: 24px;
+}
 /* Dashboard Cards */
 .stats-grid {
   display: grid;
