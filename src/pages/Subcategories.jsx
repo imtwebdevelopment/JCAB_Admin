@@ -34,7 +34,7 @@ const Subcategories = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     setUploadingImage(true);
     try {
       const reader = new FileReader();
@@ -75,11 +75,11 @@ const Subcategories = () => {
   };
 
   const handleEdit = (sub) => {
-    setFormData({ 
-      name: sub.name, 
-      parentCategory: sub.parentCategory?._id || sub.parentCategory, 
-      description: sub.description || '', 
-      image: sub.image || '' 
+    setFormData({
+      name: sub.name,
+      parentCategory: sub.parentCategory?._id || sub.parentCategory,
+      description: sub.description || '',
+      image: sub.image || ''
     });
     setEditId(sub._id);
     setShowModal(true);
@@ -116,7 +116,7 @@ const Subcategories = () => {
             <input type="text" placeholder="Search subcategories..." />
           </div>
         </div>
-        
+
         <div className="table-responsive">
           <table className="data-table">
             <thead>
@@ -124,14 +124,15 @@ const Subcategories = () => {
                 <th>Image</th>
                 <th>Name</th>
                 <th>Parent Category</th>
+                <th>Description</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="4" className="text-center">Loading...</td></tr>
+                <tr><td colSpan="5" className="text-center">Loading...</td></tr>
               ) : subcategories.length === 0 ? (
-                <tr><td colSpan="4" className="text-center empty-state">No subcategories found.</td></tr>
+                <tr><td colSpan="5" className="text-center empty-state">No subcategories found.</td></tr>
               ) : (
                 subcategories.map(sub => (
                   <tr key={sub._id}>
@@ -170,20 +171,20 @@ const Subcategories = () => {
             <form onSubmit={handleAddSubmit} className="modal-form">
               <div className="form-group">
                 <label>Subcategory Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="form-control"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  required 
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
                 />
               </div>
               <div className="form-group">
                 <label>Parent Category</label>
-                <select 
+                <select
                   className="form-control"
                   value={formData.parentCategory}
-                  onChange={(e) => setFormData({...formData, parentCategory: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, parentCategory: e.target.value })}
                   required
                 >
                   <option value="">Select a Category</option>
@@ -194,23 +195,23 @@ const Subcategories = () => {
               </div>
               <div className="form-group">
                 <label>Description</label>
-                <textarea 
+                <textarea
                   className="form-control"
                   value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows="2"
                 ></textarea>
               </div>
               <div className="form-group">
                 <label>Subcategory Image</label>
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   className="form-control"
                   onChange={handleImageUpload}
                   accept="image/*"
                 />
-                {uploadingImage && <p style={{fontSize: '12px', marginTop: '4px'}}>Uploading...</p>}
-                {formData.image && <div style={{marginTop: '10px'}}><img src={formData.image} alt="Preview" style={{height: '60px', borderRadius: '8px'}} /></div>}
+                {uploadingImage && <p style={{ fontSize: '12px', marginTop: '4px' }}>Uploading...</p>}
+                {formData.image && <div style={{ marginTop: '10px' }}><img src={formData.image} alt="Preview" style={{ height: '60px', borderRadius: '8px' }} /></div>}
               </div>
               <div className="modal-actions">
                 <button type="button" className="btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
