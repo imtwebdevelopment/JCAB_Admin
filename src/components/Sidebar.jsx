@@ -18,22 +18,22 @@ const Sidebar = ({ isOpen, closeSidebar }) => {
       <nav className="sidebar-nav">
         <ul>
           <li>
-            <NavLink to="/" className={({isActive}) => isActive ? 'active' : ''} end onClick={closeSidebar}>
+            <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''} end onClick={closeSidebar}>
               <LayoutDashboard size={20} /> Dashboard
             </NavLink>
           </li>
           <li>
-            <NavLink to="/categories" className={({isActive}) => isActive ? 'active' : ''} onClick={closeSidebar}>
+            <NavLink to="/categories" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeSidebar}>
               <Tags size={20} /> Categories
             </NavLink>
           </li>
           <li>
-            <NavLink to="/subcategories" className={({isActive}) => isActive ? 'active' : ''} onClick={closeSidebar}>
+            <NavLink to="/subcategories" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeSidebar}>
               <ListTree size={20} /> Subcategories
             </NavLink>
           </li>
           <li>
-            <NavLink to="/products" className={({isActive}) => isActive ? 'active' : ''} onClick={closeSidebar}>
+            <NavLink to="/products" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeSidebar}>
               <Package size={20} /> Products
             </NavLink>
           </li>

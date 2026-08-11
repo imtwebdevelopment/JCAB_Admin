@@ -2,22 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Plus, Edit2, Trash2, Search, X } from 'lucide-react';
 
-const PREDEFINED_SPECS = [
-  "Shape", "Dimension (in mm)", "Height (in mm)", "Power Rating (in W)",
-  "Top A/F(mm)", "Bottom A/F(mm)", "Thickness (mm)", "Base Plate Size",
-  "Base Plate Thick", "PCD", "Foundation Bolt", "Flood light",
-  "Luminance", "Luminary Size", "Luminary Clamp Size", "Solar Panel",
-  "Each Panel Size", "Battery Pack", "Each Battery size",
-  "Solar charging Time", "Lighting time", "Ingress protection",
-  "Material", "Working Temperature", "Led working life", "Led chip",
-  "Charge controller", "Operating mode", "Warranty", "Wattage",
-  "Power factor", "Luminous efficiency", "Beam angle", "Input voltage range",
-  "Input frequency", "Number of led", "Standard surge protection",
-  "lamp housing", "Colour rendering index", "Finish", "LED Driver",
-  "Total harmonic distortion", "Light Colour", "Pole Dia", "Size(mm)",
-  "Product Code", "Model No."
-].sort();
-
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -25,9 +9,8 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ 
-    title: '', description: '', category: '', subcategory: '', price: '', image: '' 
+    title: '', description: '', category: '', subcategory: '', image: '' 
   });
-  const [specsArray, setSpecsArray] = useState([]);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [editId, setEditId] = useState(null);
 
@@ -75,22 +58,14 @@ const Products = () => {
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     try {
-      const specifications = {};
-      specsArray.forEach(spec => {
-        if (spec.key.trim() && spec.value.trim()) {
-          specifications[spec.key.trim()] = spec.value.trim();
-        }
-      });
-      
-      const payload = { ...formData, images: [formData.image], specifications }; 
+      const payload = { ...formData, images: [formData.image] }; 
       if (editId) {
         await axios.put(`/products/${editId}`, payload);
       } else {
         await axios.post('/products', payload);
       }
       setShowModal(false);
-      setFormData({ title: '', description: '', category: '', subcategory: '', price: '', image: '' });
-      setSpecsArray([]);
+      setFormData({ title: '', description: '', category: '', subcategory: '', image: '' });
       setEditId(null);
       fetchProducts();
     } catch (error) {
@@ -100,8 +75,7 @@ const Products = () => {
   };
 
   const handleOpenAddModal = () => {
-    setFormData({ title: '', description: '', category: '', subcategory: '', price: '', image: '' });
-    setSpecsArray([]);
+    setFormData({ title: '', description: '', category: '', subcategory: '', image: '' });
     setEditId(null);
     setShowModal(true);
   };
@@ -112,18 +86,9 @@ const Products = () => {
       description: prod.description || '', 
       category: prod.category?._id || prod.category, 
       subcategory: prod.subcategory?._id || prod.subcategory || '', 
-      price: prod.price || '', 
       image: (prod.images && prod.images.length > 0) ? prod.images[0] : '' 
     });
     
-    // Map specifications object back to array
-    const loadedSpecs = [];
-    if (prod.specifications) {
-      for (const [key, value] of Object.entries(prod.specifications)) {
-        loadedSpecs.push({ key, value });
-      }
-    }
-    setSpecsArray(loadedSpecs);
     setEditId(prod._id);
     setShowModal(true);
   };
@@ -167,15 +132,14 @@ const Products = () => {
                 <th>Image</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Price</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="5" className="text-center">Loading...</td></tr>
+                <tr><td colSpan="4" className="text-center">Loading...</td></tr>
               ) : products.length === 0 ? (
-                <tr><td colSpan="5" className="text-center empty-state">No products found. Add your first product!</td></tr>
+                <tr><td colSpan="4" className="text-center empty-state">No products found. Add your first product!</td></tr>
               ) : (
                 products.map(prod => (
                   <tr key={prod._id}>
@@ -189,7 +153,6 @@ const Products = () => {
                       {prod.category?.name || 'Unknown'}
                       {prod.subcategory && <span className="sub-badge"> / {prod.subcategory.name}</span>}
                     </td>
-                    <td>₹{prod.price}</td>
                     <td>
                       <div className="action-buttons">
                         <button className="btn-icon edit" onClick={() => handleEdit(prod)}><Edit2 size={16} /></button>
@@ -256,16 +219,7 @@ const Products = () => {
                   </select>
                 </div>
               </div>
-              <div className="form-group">
-                <label>Price</label>
-                <input 
-                  type="number" 
-                  className="form-control"
-                  value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: e.target.value})}
-                  required 
-                />
-              </div>
+
               <div className="form-group">
                 <label>Description</label>
                 <textarea 
@@ -276,60 +230,7 @@ const Products = () => {
                 ></textarea>
               </div>
 
-              <div className="form-group">
-                <label style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                  Dynamic Specifications
-                  <button 
-                    type="button" 
-                    className="btn-secondary" 
-                    style={{padding: '4px 8px', fontSize: '12px'}}
-                    onClick={() => setSpecsArray([...specsArray, { key: '', value: '' }])}
-                  >
-                    + Add Detail
-                  </button>
-                </label>
-                {specsArray.map((spec, index) => (
-                  <div key={index} style={{display: 'flex', gap: '8px', marginBottom: '8px'}}>
-                    <input 
-                      type="text" 
-                      list="spec-keys"
-                      className="form-control" 
-                      placeholder="e.g. Wattage, Shape"
-                      value={spec.key}
-                      onChange={(e) => {
-                        const newArray = [...specsArray];
-                        newArray[index].key = e.target.value;
-                        setSpecsArray(newArray);
-                      }}
-                      style={{flex: 1}}
-                    />
-                    <datalist id="spec-keys">
-                      {PREDEFINED_SPECS.map(key => <option key={key} value={key} />)}
-                    </datalist>
-                    
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      placeholder="Value (e.g. 120W, Round)"
-                      value={spec.value}
-                      onChange={(e) => {
-                        const newArray = [...specsArray];
-                        newArray[index].value = e.target.value;
-                        setSpecsArray(newArray);
-                      }}
-                      style={{flex: 1}}
-                    />
-                    <button 
-                      type="button" 
-                      className="btn-icon delete"
-                      onClick={() => setSpecsArray(specsArray.filter((_, i) => i !== index))}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                ))}
-                {specsArray.length === 0 && <p className="text-muted" style={{fontSize: '12px', marginTop: '4px'}}>No custom details added. Click "+ Add Detail" to add specifications like Wattage, Shape, Material, etc.</p>}
-              </div>
+
               <div className="form-group">
                 <label>Product Image</label>
                 <input 

@@ -20,15 +20,15 @@
 }
 
 .sidebar-logo h1 {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #000000;
   font-size: 32px;
+  font-weight: 700;
 }
 
 .sidebar-logo p {
-  color: var(--text-secondary);
-  font-size: 12px;
+  color: #5c5c5c;
+  font-size: 13px;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
