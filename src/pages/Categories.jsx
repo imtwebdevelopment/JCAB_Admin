@@ -5,6 +5,7 @@ import { Plus, Edit2, Trash2, Search, X } from 'lucide-react';
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', image: '' });
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -87,6 +88,10 @@ const Categories = () => {
     }
   };
 
+  const filteredCategories = categories.filter(cat => 
+    cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="page-container fade-in">
       <div className="page-header flex-between">
@@ -103,7 +108,12 @@ const Categories = () => {
         <div className="toolbar flex-between">
           <div className="search-box">
             <Search size={18} />
-            <input type="text" placeholder="Search categories..." />
+            <input 
+              type="text" 
+              placeholder="Search categories..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
         
@@ -120,10 +130,10 @@ const Categories = () => {
             <tbody>
               {loading ? (
                 <tr><td colSpan="4" className="text-center">Loading...</td></tr>
-              ) : categories.length === 0 ? (
+              ) : filteredCategories.length === 0 ? (
                 <tr><td colSpan="4" className="text-center empty-state">No categories found. Create one!</td></tr>
               ) : (
-                categories.map(cat => (
+                filteredCategories.map(cat => (
                   <tr key={cat._id}>
                     <td>
                       <div className="table-img-placeholder">

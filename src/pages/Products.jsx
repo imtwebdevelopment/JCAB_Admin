@@ -7,6 +7,7 @@ const Products = () => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ 
     title: '', description: '', category: '', subcategory: '', image: '' 
@@ -105,6 +106,10 @@ const Products = () => {
     }
   };
 
+  const filteredProducts = products.filter(prod => 
+    prod.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="page-container fade-in">
       <div className="page-header flex-between">
@@ -121,7 +126,12 @@ const Products = () => {
         <div className="toolbar flex-between">
           <div className="search-box">
             <Search size={18} />
-            <input type="text" placeholder="Search products..." />
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
         
@@ -138,10 +148,10 @@ const Products = () => {
             <tbody>
               {loading ? (
                 <tr><td colSpan="4" className="text-center">Loading...</td></tr>
-              ) : products.length === 0 ? (
+              ) : filteredProducts.length === 0 ? (
                 <tr><td colSpan="4" className="text-center empty-state">No products found. Add your first product!</td></tr>
               ) : (
-                products.map(prod => (
+                filteredProducts.map(prod => (
                   <tr key={prod._id}>
                     <td>
                       <div className="table-img-placeholder">

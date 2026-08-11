@@ -6,6 +6,7 @@ const Subcategories = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ name: '', parentCategory: '', description: '', image: '' });
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -97,6 +98,10 @@ const Subcategories = () => {
     }
   };
 
+  const filteredSubcategories = subcategories.filter(sub => 
+    sub.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="page-container fade-in">
       <div className="page-header flex-between">
@@ -113,7 +118,12 @@ const Subcategories = () => {
         <div className="toolbar flex-between">
           <div className="search-box">
             <Search size={18} />
-            <input type="text" placeholder="Search subcategories..." />
+            <input 
+              type="text" 
+              placeholder="Search subcategories..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
 
@@ -131,10 +141,10 @@ const Subcategories = () => {
             <tbody>
               {loading ? (
                 <tr><td colSpan="5" className="text-center">Loading...</td></tr>
-              ) : subcategories.length === 0 ? (
+              ) : filteredSubcategories.length === 0 ? (
                 <tr><td colSpan="5" className="text-center empty-state">No subcategories found.</td></tr>
               ) : (
-                subcategories.map(sub => (
+                filteredSubcategories.map(sub => (
                   <tr key={sub._id}>
                     <td>
                       <div className="table-img-placeholder">
